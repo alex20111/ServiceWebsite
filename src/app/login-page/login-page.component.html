@@ -1,18 +1,24 @@
-
+<h3>Sign-in</h3>
 
 <div class="row">
-    <div class="col-md-3" >
-    <form [formGroup]="loginFormGroup" (submit)="login()">
-    User name:<br />
-    <input type="text" formControlName="userName" class="form-control" /><br />
+    <div class="col-md-3">
+        <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+        <form [formGroup]="loginFormGroup" (submit)="login()">
+            User name:<br />
+            <input type="text" formControlName="userName" class="form-control" placeholder="User Name"
+                [ngClass]="{ 'is-invalid': submitted && frm.userName.errors }" /><br />
+            <p *ngIf="submitted && frm.userName.errors?.required " class="alert alert-danger">User Name required.</p>
+            <!-- Questiom mark after errors verify if there are any errors before checking if required. Errors won't always exist, ? is a safe operator-->
+            Password:<br />
+            <input type="password" formControlName="password" class="form-control" placeholder="Password"
+                [ngClass]="{ 'is-invalid': submitted && frm.password.errors }" /><br />
+            <p *ngIf="submitted && frm.password.errors?.required " class="alert alert-danger">Password required.</p>
 
-    Password:<br/>
-    <input type="text" formControlName="password" class="form-control" /><br />
-    
-    <button class="btn btn-primary">Login</button>
+            <button [disabled]="loading" class="btn btn-primary btn-block">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Login
+            </button>
 
-</form>
-
-</div>
-
+        </form>
+    </div>
 </div>

@@ -1,5 +1,7 @@
+import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import {User,  UserService } from '../user.service';
+import { UserService } from '../services/user.service';
+import { User } from '../_models/User';
 
 @Component({
   selector: 'app-home-page',
@@ -7,20 +9,13 @@ import {User,  UserService } from '../user.service';
   styleUrls: ['./home-page.component.css']
 })
 export class HomePageComponent implements OnInit {
-
-  userLogged: boolean;
   user: User;
 
-  constructor(private userSvc: UserService) { }
+  constructor(private authSvc: AuthService) { }
 
-  ngOnInit(): void {
-    this.userLogged = this.userSvc.isUserLogged();
-
-    if (this.userLogged){
-      this.user = this.userSvc.getLoggedInUser();
-    }
-
-    console.log(this.userLogged);
+  ngOnInit(): void { 
+    this.authSvc.getCurrObservableUserLogged().subscribe(u => this.user = u);
+      // this.user = this.userSvc.getCurrentUser();
   }
 
 }

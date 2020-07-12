@@ -1,3 +1,54 @@
-<p>home-page works!</p>
+<div class="container-fluid">
+  <h3> Current temperature</h3>
+  <div class="row">
 
-<div *ngIf="userLogged == true" >Hello {{user.firstName}} </div>
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-2 col-md-4 ">
+      <div class="card border-left-primary shadow h-100 py-2 mb-4">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Sun </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">25 C</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-sun fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Earnings (Monthly) Card Example -->
+
+      <div class="card border-left-success shadow h-100 py-2 mb-4">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Shade</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">21 C</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-umbrella-beach fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card border-left-info shadow h-100 py-2 mb-4">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Pool</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">90 F</div>
+            </div>
+            <div class="col-auto">
+                <i class="fas fa-swimming-pool fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div *ngIf="user">Hello {{user.firstName}} </div> -->
+
+
+  </div>
+</div>

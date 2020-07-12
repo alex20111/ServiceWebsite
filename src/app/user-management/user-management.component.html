@@ -1,0 +1,168 @@
+<div *ngIf="loading" class="spinner-border spinner-border-sm"></div>
+
+<div *ngIf="error" class="alert alert-danger">{{error}}</div>
+<div *ngIf="message" class="alert alert-success">{{message}}</div>
+<div *ngIf="userList.length > 0 &&  !isEditingUser && !isAddingUser  ">
+
+    <h3>Users</h3>
+    <div class="text-right"><button class="btn btn-success mb-1" (click)="add()">Add</button></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>First Name</th>
+                <th>Last name</th>
+                <th>Websites access Level</th>
+                <th>Last login</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tr *ngFor="let user of userList">
+            <td>{{user.userName}}</td>
+            <td>{{user.firstName}}</td>
+            <td>{{user.lastName}}</td>
+            <td>
+                <div *ngFor="let access of user.userWeb">
+                    <b> Website: </b> {{access.websiteAccess}} <br />
+                    &nbsp; &nbsp;<b>Level:</b> {{access.accessLevel}}
+                    <br />
+                </div>
+            </td>
+            <td></td>
+            <td><button class='btn btn-primary ' (click)='edit(user)'>Edit</button>
+                <button class='btn btn-danger ml-1' (click)='delete(user)'>Delete</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div *ngIf="isEditingUser">
+    <h3>Editing user</h3>
+    <div class="row">
+        <div class="col-md-5">
+            <form [formGroup]="editUserForm" (submit)="updateUser()">
+                <label> User Name:</label><br />
+                <input type="text" formControlName="usr_userName" class="form-control" /><br />
+                <label>First name: </label>
+                <input type="text" formControlName="usr_firstName" class="form-control" /><br />
+                <label>Last name: </label>
+                <input type="text" formControlName="usr_lastName" class="form-control" /><br />
+                <label>Email: </label>
+                <input type="text" formControlName="usr_email" class="form-control" /><br />
+
+                <div class="mt-2">
+                    <b>Website:<br /></b>
+                    <table class="table">
+                        <tr>
+                            <th></th>
+                            <th>Website access</th>
+                            <th>Website access level</th>
+                        </tr>
+                        <tr *ngFor="let wbacc of UserAccess; index as i">
+                            <td>{{i}}.</td>
+                            <td>
+                                {{wbacc.websiteAccess}}
+                            </td>
+                            <td> <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.Admin}}">Admin <br />
+                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.Regular}}">Regular<br />
+                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.View}}">View<br />
+                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.Unauthorized}}">No Access
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+                <button [disabled]="loading" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Save
+                </button>
+                <button class="btn btn-default" (click)='cancel()'>cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div *ngIf="isAddingUser">
+    <h3>Add user</h3>
+    <div class="row">
+        <div class="col-md-5">
+            <form [formGroup]="addUserForm" (submit)="addNewUser()">
+
+                <label for="userNameValidation">User Name</label>
+                <input type="text" class="form-control " id="userNameValidation" placeholder="User Name ( Required )"
+                    required formControlName="usr_userName"
+                    [ngClass]="{'is-invalid': submitted && fAdd.usr_userName.errors}">
+                <div *ngIf="submitted && fAdd.usr_userName.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_userName.errors.required">Please provide a valid user name.</div>
+                </div>
+
+                <label for="passwordValidation"> Password:</label><br />
+                <input type="text" id="passwordValidation" formControlName="usr_password" class="form-control"
+                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_password.errors}" />
+                <div *ngIf="submitted && fAdd.usr_password.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_password.errors.required">Please provide a valid password.</div>
+                </div>
+
+                <label for="firstNameValidation">First name: </label>
+                <input id="firstNameValidation" type="text" formControlName="usr_firstName" class="form-control"
+                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_firstName.errors}" />
+                <div *ngIf="submitted && fAdd.usr_firstName.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_firstName.errors.required">Please provide a valid first name.</div>
+                </div>
+
+                <label for="lastNameValidation">Last name: </label>
+                <input id="lastNameValidation" type="text" formControlName="usr_lastName" class="form-control"
+                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_lastName.errors}" />
+                <div *ngIf="submitted && fAdd.usr_lastName.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_lastName.errors.required">Please provide a valid last name.</div>
+                </div>
+                <label for="emailValidation">Email: </label>
+                <input id="emailValidation" type="email" formControlName="usr_email" class="form-control"
+                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_email.errors}" required />
+                <div *ngIf="!submitted && fAdd.usr_email.invalid && fAdd.usr_email.dirty" class="invalid-feedback mb-1">
+                    Please provide a valid email.
+                </div>
+                <div *ngIf="submitted && fAdd.usr_email.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_email.errors.required">Email is required</div>
+                    <div *ngIf="fAdd.usr_email.errors.email">Email must be a valid email address</div>
+                </div>
+
+
+                <div class="mt-2">
+                    <b>Website:<br /></b>
+                    <table class="table">
+                        <tr>
+                            <th></th>
+                            <th>Website access</th>
+                            <th>Website access level</th>
+                        </tr>
+                        <tr *ngFor="let wbacc of UserAccess; index as i">
+                            <td>{{i}}.</td>
+                            <td>
+                                {{wbacc.websiteAccess}}
+                            </td>
+                            <td> <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.Admin}}">Admin <br />
+                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.Regular}}">Regular<br />
+                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.View}}">View<br />
+                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
+                                    value="{{acc.Unauthorized}}">No Access
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+                <button [disabled]="loading" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Save
+                </button>
+                <button class="btn btn-default" (click)='cancel()'>cancel</button>
+            </form>
+        </div>
+    </div>
+</div>

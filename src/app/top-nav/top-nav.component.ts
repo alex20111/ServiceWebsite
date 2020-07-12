@@ -1,4 +1,8 @@
+import { AuthService } from './../services/auth.service';
+import { UserService } from '../services/user.service';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { User } from '../_models/User';
 
 @Component({
   selector: 'app-top-nav',
@@ -7,9 +11,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopNavComponent implements OnInit {
 
-  constructor() { }
+  public userLogged: User;
+
+  constructor(private authSvc: AuthService, private router: Router) {
+    this.authSvc.getCurrObservableUserLogged().subscribe(u => this.userLogged = u);
+   }
 
   ngOnInit(): void {
+  }
+
+  logout(){
+    this.authSvc.logout();
+    this.router.navigate(['/']);
+    this.userLogged = null;
   }
 
 }
