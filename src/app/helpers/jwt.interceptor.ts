@@ -12,7 +12,6 @@ export class JwtInterceptor implements HttpInterceptor {
         // add authorization header with jwt token if available
         let currentUser = this.authSvc.getCurrentUser();
         // console.log("setting token");
-        
         if (currentUser && currentUser.authToken) {
             // console.log(currentUser.authToken);
             request = request.clone({

@@ -5,7 +5,7 @@
         <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
         <form [formGroup]="loginFormGroup" (submit)="login()">
             User name:<br />
-            <input type="text" formControlName="userName" class="form-control" placeholder="User Name"
+            <input type="text" formControlName="userName" class="form-control" placeholder="User Name" 
                 [ngClass]="{ 'is-invalid': submitted && frm.userName.errors }" /><br />
             <p *ngIf="submitted && frm.userName.errors?.required " class="alert alert-danger">User Name required.</p>
             <!-- Questiom mark after errors verify if there are any errors before checking if required. Errors won't always exist, ? is a safe operator-->

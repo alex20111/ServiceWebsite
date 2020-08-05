@@ -2,7 +2,7 @@
 
 <div *ngIf="error" class="alert alert-danger">{{error}}</div>
 <div *ngIf="message" class="alert alert-success">{{message}}</div>
-<div *ngIf="userList.length > 0 &&  !isEditingUser && !isAddingUser  ">
+<div *ngIf="userList.length > 0 &&   !isAddingUser  ">
 
     <h3>Users</h3>
     <div class="text-right"><button class="btn btn-success mb-1" (click)="add()">Add</button></div>
@@ -29,61 +29,21 @@
                     <br />
                 </div>
             </td>
-            <td></td>
-            <td><button class='btn btn-primary ' (click)='edit(user)'>Edit</button>
+            <td>
+                <ng-template [ngIf]="user.lastLogin" [ngIfElse]="noDate">
+                    {{convertDate(user.lastLogin) | date:'medium' }}
+                </ng-template>
+                <ng-template #noDate>
+                    Never Logged in
+                </ng-template>
+            </td>
+            <td><button class='btn btn-primary ' [routerLink]="['/editUser',user.id]">Edit</button>
+                <!-- <button class='btn btn-primary ' (click)='edit(user)'>Edit</button> -->
+                
                 <button class='btn btn-danger ml-1' (click)='delete(user)'>Delete</button>
             </td>
         </tr>
     </table>
-</div>
-<div *ngIf="isEditingUser">
-    <h3>Editing user</h3>
-    <div class="row">
-        <div class="col-md-5">
-            <form [formGroup]="editUserForm" (submit)="updateUser()">
-                <label> User Name:</label><br />
-                <input type="text" formControlName="usr_userName" class="form-control" /><br />
-                <label>First name: </label>
-                <input type="text" formControlName="usr_firstName" class="form-control" /><br />
-                <label>Last name: </label>
-                <input type="text" formControlName="usr_lastName" class="form-control" /><br />
-                <label>Email: </label>
-                <input type="text" formControlName="usr_email" class="form-control" /><br />
-
-                <div class="mt-2">
-                    <b>Website:<br /></b>
-                    <table class="table">
-                        <tr>
-                            <th></th>
-                            <th>Website access</th>
-                            <th>Website access level</th>
-                        </tr>
-                        <tr *ngFor="let wbacc of UserAccess; index as i">
-                            <td>{{i}}.</td>
-                            <td>
-                                {{wbacc.websiteAccess}}
-                            </td>
-                            <td> <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.Admin}}">Admin <br />
-                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.Regular}}">Regular<br />
-                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.View}}">View<br />
-                                <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.Unauthorized}}">No Access
-                            </td>
-                        </tr>
-
-                    </table>
-                </div>
-                <button [disabled]="loading" class="btn btn-primary">
-                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Save
-                </button>
-                <button class="btn btn-default" (click)='cancel()'>cancel</button>
-            </form>
-        </div>
-    </div>
 </div>
 <div *ngIf="isAddingUser">
     <h3>Add user</h3>
@@ -94,34 +54,35 @@
                 <label for="userNameValidation">User Name</label>
                 <input type="text" class="form-control " id="userNameValidation" placeholder="User Name ( Required )"
                     required formControlName="usr_userName"
-                    [ngClass]="{'is-invalid': submitted && fAdd.usr_userName.errors}">
-                <div *ngIf="submitted && fAdd.usr_userName.errors" class="invalid-feedback mb-1">
-                    <div *ngIf="fAdd.usr_userName.errors.required">Please provide a valid user name.</div>
+                    [ngClass]="{'is-invalid': fAdd.usr_userName.errors && ( (fAdd.usr_userName.touched || fAdd.usr_userName.dirty) || submitted )}">
+                <div *ngIf="fAdd.usr_userName.errors && ( (fAdd.usr_userName.touched || fAdd.usr_userName.dirty) || submitted )" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_userName.errors?.required">Please provide a valid user name.</div>
                 </div>
 
                 <label for="passwordValidation"> Password:</label><br />
                 <input type="text" id="passwordValidation" formControlName="usr_password" class="form-control"
-                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_password.errors}" />
-                <div *ngIf="submitted && fAdd.usr_password.errors" class="invalid-feedback mb-1">
-                    <div *ngIf="fAdd.usr_password.errors.required">Please provide a valid password.</div>
+                    [ngClass]="{'is-invalid': fAdd.usr_password.errors && ( (fAdd.usr_password.touched || fAdd.usr_password.dirty) || submitted )}" />
+                <div *ngIf="fAdd.usr_password.errors && ( (fAdd.usr_password.touched || fAdd.usr_password.dirty ) || submitted)" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_password.errors?.required">Please provide a valid password.</div>
+                    <div *ngIf="fAdd.usr_password.errors?.minlength">Password must me at least 6 character.</div>
                 </div>
 
                 <label for="firstNameValidation">First name: </label>
                 <input id="firstNameValidation" type="text" formControlName="usr_firstName" class="form-control"
-                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_firstName.errors}" />
-                <div *ngIf="submitted && fAdd.usr_firstName.errors" class="invalid-feedback mb-1">
+                    [ngClass]="{'is-invalid': fAdd.usr_firstName.errors && ( (fAdd.usr_firstName.touched || fAdd.usr_firstName.dirty) || submitted )}" />
+                <div *ngIf="fAdd.usr_firstName.errors && ( (fAdd.usr_firstName.touched || fAdd.usr_firstName.dirty) || submitted )" class="invalid-feedback mb-1">
                     <div *ngIf="fAdd.usr_firstName.errors.required">Please provide a valid first name.</div>
                 </div>
 
                 <label for="lastNameValidation">Last name: </label>
                 <input id="lastNameValidation" type="text" formControlName="usr_lastName" class="form-control"
-                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_lastName.errors}" />
-                <div *ngIf="submitted && fAdd.usr_lastName.errors" class="invalid-feedback mb-1">
+                    [ngClass]="{'is-invalid': fAdd.usr_lastName.errors && ( (fAdd.usr_lastName.touched || fAdd.usr_lastName.dirty) || submitted )}" />
+                <div *ngIf="fAdd.usr_lastName.errors && ( (fAdd.usr_lastName.touched || fAdd.usr_lastName.dirty) || submitted )" class="invalid-feedback mb-1">
                     <div *ngIf="fAdd.usr_lastName.errors.required">Please provide a valid last name.</div>
                 </div>
                 <label for="emailValidation">Email: </label>
                 <input id="emailValidation" type="email" formControlName="usr_email" class="form-control"
-                    [ngClass]="{'is-invalid': submitted &&  fAdd.usr_email.errors}" required />
+                    [ngClass]="{'is-invalid': fAdd.usr_email.errors && ( (fAdd.usr_email.touched || fAdd.usr_email.dirty) || submitted )}" required />
                 <div *ngIf="!submitted && fAdd.usr_email.invalid && fAdd.usr_email.dirty" class="invalid-feedback mb-1">
                     Please provide a valid email.
                 </div>
@@ -129,8 +90,6 @@
                     <div *ngIf="fAdd.usr_email.errors.required">Email is required</div>
                     <div *ngIf="fAdd.usr_email.errors.email">Email must be a valid email address</div>
                 </div>
-
-
                 <div class="mt-2">
                     <b>Website:<br /></b>
                     <table class="table">
@@ -145,13 +104,13 @@
                                 {{wbacc.websiteAccess}}
                             </td>
                             <td> <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.Admin}}">Admin <br />
+                                    value="{{common.acc.Admin}}">Admin <br />
                                 <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.Regular}}">Regular<br />
+                                    value="{{common.acc.Regular}}">Regular<br />
                                 <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.View}}">View<br />
+                                    value="{{common.acc.View}}">View<br />
                                 <input class="mr-1" type="radio" formControlName="usr_access{{i}}"
-                                    value="{{acc.Unauthorized}}">No Access
+                                    value="{{common.acc.Unauthorized}}">No Access
                             </td>
                         </tr>
 
@@ -161,7 +120,7 @@
                     <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                     Save
                 </button>
-                <button class="btn btn-default" (click)='cancel()'>cancel</button>
+                <button class="btn btn-default" [routerLink]="['/users',0]">cancel</button>
             </form>
         </div>
     </div>

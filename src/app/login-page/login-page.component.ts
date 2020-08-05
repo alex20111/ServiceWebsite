@@ -5,9 +5,10 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../_models/User';
 import { AuthUser } from '../_models/AuthUser';
 
+
 import { Router } from '@angular/router';
 
-import * as sha512 from 'js-sha512';
+// import * as sha512 from 'js-sha512';
 
 @Component({
   selector: 'app-login-page',
@@ -50,14 +51,13 @@ export class LoginPageComponent implements OnInit {
     if (this.loginFormGroup.invalid) {
       return;
     }
-
-    let hashed = sha512.sha512('Message to hash');
-    // console.log("hashed");
-    // console.log(hashed); //TODO 
-
     const userToLog = this.loginFormGroup.value;
 
-    const auth = new AuthUser(userToLog.userName, userToLog.password, Websites.service);
+    
+    let hashed = this.authSvc.hashPassword(userToLog.password);
+    console.log("hashed: " , hashed);
+
+    const auth = new AuthUser(userToLog.userName, hashed, Websites.service);
 
     this.loading = true;
 
@@ -67,8 +67,7 @@ export class LoginPageComponent implements OnInit {
         this.router.navigate(['']);
       },
       (error) => {
-        console.log("Error in login");
-        console.log(error);
+        console.log("Error in login: " , error);
         if (error === 'Login'){
           this.error = "Invalid user/password"
         }else{

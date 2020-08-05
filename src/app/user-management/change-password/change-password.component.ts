@@ -16,6 +16,8 @@ export class ChangePasswordComponent implements OnInit {
   message: string;
   submitted = false;
 
+  loading = false;
+
   changePassworForm: FormGroup;
 
   constructor(private userSvr: UserService, private authSvr: AuthService, private formBuilder: FormBuilder) { }
@@ -32,16 +34,20 @@ export class ChangePasswordComponent implements OnInit {
 
   changePassword() {
     this.submitted = true;
+    this.loading = true;
     const user = this.authSvr.getCurrentUser();
 
     if (this.changePassworForm.invalid) {
       console.log('form invalid');
+      this.loading = false;
       return;
     }
 
     const pass = this.changePassworForm.value.password;
 
-    this.userSvr.changePassword(pass).subscribe(
+    const passHashed = this.authSvr.hashPassword(pass);
+
+    this.userSvr.changePassword(passHashed).subscribe(
       (data) => {
         console.log('ts');
         this.message = 'Password changed';
@@ -52,6 +58,7 @@ export class ChangePasswordComponent implements OnInit {
       }
     );
     this.submitted = false;
+    this.loading = false;
   }
 
   get frm() {

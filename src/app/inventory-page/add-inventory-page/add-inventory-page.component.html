@@ -1,0 +1,81 @@
+<h3 class="page-header">Add Item</h3>
+<hr/>
+<div class="row">
+    <div class="col-md-5">
+        <form [formGroup]="addItemForm" (ngSubmit)="addInvItem()">
+            <div class="form-group">
+                <label for="nameValidation">Name</label>
+                <input type="text" class="form-control " id="nameValidation" placeholder="Item name" required
+                    formControlName="inv_name" [ngClass]="{'is-invalid': submitted && fAdd.inv_name.errors}">
+                <div *ngIf="submitted && fAdd.usr_userName.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.usr_userName.errors.required">Please provide a valid user name.</div>
+                </div>
+            </div>
+
+            <div class="form-group ">
+                <div class="row">
+                    <div class="col-sm-2 col-lg-2">
+                        <label for="quantityValidation"> Quantity:</label><br />
+                        <input type="text" id="quantityValidation" formControlName="inv_qty" class="form-control"
+                            [ngClass]="{'is-invalid': submitted &&  fAdd.inv_qty.errors}" />
+                        <div *ngIf="submitted && fAdd.inv_qty.errors" class="invalid-feedback mb-1">
+                            <div *ngIf="fAdd.inv_qty.errors.required">Please provide a valid password.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="CategoryValidation">Category: </label>
+                <input id="CategoryValidation" type="text" formControlName="inv_category" class="form-control"
+                    [ngClass]="{'is-invalid': submitted &&  fAdd.inv_category.errors}" />
+                <div *ngIf="submitted && fAdd.inv_category.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.inv_category.errors.required">Please provide a valid first name.</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="groupValidation">Group: </label>
+                <input id="groupValidation" type="text" formControlName="inv_group" class="form-control"
+                    [ngClass]="{'is-invalid': submitted &&  fAdd.inv_group.errors}" />
+                <div *ngIf="submitted && fAdd.inv_group.errors" class="invalid-feedback mb-1">
+                    <div *ngIf="fAdd.inv_group.errors.required">Please provide a valid last name.</div>
+                </div>
+                
+            </div>
+
+            <div class="form-group">
+                <label for="refValidation">References: </label>
+                <div *ngFor="let ref of r.controls; let i = index" class="mb-2">
+                    <div [formGroup]="ref" class="form-row">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" (click)="toggleLink(i)"> 
+                                    <i class="fas " title="Remove Html Link"
+                                        [ngClass]="{ 'fa-unlink': !ref.value.inv_link_html , 'fa-link': ref.value.inv_link_html  }"> </i>
+                                 </div>
+                            </div>
+                            <input type="text" formControlName="inv_ref_name" class="form-control" />
+                            
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success btn-xs" (click)="addRef($event)">Add</button>
+            </div>
+
+            <div class="form-group">
+                <label for="detailsValidation">Details: </label>
+                <textarea id="detailsValidation" formControlName="inv_details" class="form-control" cols="70" rows="8"> </textarea>
+               
+            </div>
+
+            <div class="form-group">
+                <label for="FileUploadValidation">Thumbnail: </label>
+                <input type="file" id="FileUploadValidation" formControlName="inv_thumb" class="form-control"/>
+               
+            </div>
+
+            <button class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>

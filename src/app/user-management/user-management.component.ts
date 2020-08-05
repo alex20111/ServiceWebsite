@@ -1,3 +1,4 @@
+import { AuthService } from './../services/auth.service';
 import { logging } from 'protractor';
 import { UserWbsAccess } from './../_models/UserWbsAccess';
 import { UserService } from './../services/user.service';
@@ -8,6 +9,7 @@ import { Access } from '../_models/Access';
 import { Websites } from '../_models/Websites';
 import { unescapeIdentifier } from '@angular/compiler';
 import { ActivatedRoute } from '@angular/router';
+import { UserCommon } from './userCommon';
 
 @Component({
   selector: 'app-user-management',
@@ -19,11 +21,8 @@ export class UserManagementComponent implements OnInit {
   message: string;
   submitted = false;
 
-  userList: User[] = []; 
+  userList: User[] = [];
   loading = false; // to display loading value
-
-  editUserForm: FormGroup; // Form from the html page
-  isEditingUser = false;
 
   localUser: User;
   UserAccess: UserWbsAccess[] = []; //website access level. sorted by Websites enum.
@@ -32,12 +31,9 @@ export class UserManagementComponent implements OnInit {
   isAddingUser = false;
 
   // common
-  acc = Access; // user access to make availaible to the html
-  web = Websites; // Websites availaible
-  userAcc: Access[] = [Access.Admin, Access.Regular, Access.View, Access.Unauthorized];
-  userWeb: Websites[] = [Websites.service, Websites.Isabelle, Websites.Mathieu, Websites.Headless];
+  common: UserCommon = new UserCommon();
 
-  constructor(private userSvc: UserService, private route: ActivatedRoute) { }
+  constructor(private userSvc: UserService, private route: ActivatedRoute, private authSvr: AuthService) { }
   // control getter for add form
   get fAdd() {
     return this.addUserForm.controls;
@@ -57,86 +53,18 @@ export class UserManagementComponent implements OnInit {
     );
   }
 
-  edit(usr: User) {
-    this.isEditingUser = true;
-    this.localUser = usr;
-    this.UserAccess = [];
-
-    // Pre-populate
-    this.editUserForm.setValue({
-      usr_userName: usr.userName,
-      usr_firstName: usr.firstName,
-      usr_lastName: usr.lastName,
-      usr_email: usr.email,
-      usr_access0: '',
-      usr_access1: '',
-      usr_access2: '',
-      usr_access3: ''
-    });
-
-    let idx = 0;// build website access. match
-    for (const web of this.userWeb) {
-
-      const wbaccess = usr.userWeb.filter(uf => uf.websiteAccess === web)[0];
-      let websiteAccess;
-
-      if (wbaccess) {
-        this.UserAccess.push(wbaccess);
-        websiteAccess = wbaccess.accessLevel;
-      } else {
-        const wbacc = new UserWbsAccess(-1, Access.Unauthorized, web);
-        websiteAccess = wbacc.accessLevel;
-        this.UserAccess.push(wbacc);
-      }
-
-      switch (idx) {
-        case 0: {
-          this.editUserForm.patchValue({ usr_access0: websiteAccess }); // update the form to set the right value
-          break;
-        }
-        case 1: {
-          this.editUserForm.patchValue({ usr_access1: websiteAccess }); // update the form to set the right value
-          break;
-        }
-        case 2: {
-          this.editUserForm.patchValue({ usr_access2: websiteAccess }); // update the form to set the right value
-          break;
-        }
-        case 3: {
-          this.editUserForm.patchValue({ usr_access3: websiteAccess }); // update the form to set the right value
-          break;
-        }
-      }
-      idx++;
-    }
-    console.log(this.UserAccess);
-  }
-
-  updateUser() {
-    // console.log(this.isEditingUser);
-    if (!this.editUserForm.valid) {
-      console.log("Form not valid");
-      return;
-    }
-
-    this.loading = true;
-
-    const user = this.editUserForm.value;
-
-    this.fillOutUserToSubmit(user);
-  }
 
   delete(user: User) {
 
     if (confirm("Are you sure to delete?")) {
-      
+
       this.userSvc.deleteUser(user.id).subscribe({
         next: (data) => {
           this.loading = false;
           this.userList = this.userList.filter(u => u.id !== user.id);
           // console.log("data from delete");
           // console.log(data);
-          if (data.message === 'success'){
+          if (data.message === 'success') {
             this.message = 'User deleted';
             window.scroll(0, 0);
           }
@@ -157,18 +85,17 @@ export class UserManagementComponent implements OnInit {
     this.localUser = undefined;
     this.UserAccess = [];
     this.isAddingUser = false;
-    this.isEditingUser = false;
     this.loading = false;
     this.error = undefined;
+    // this.init(true);
   }
 
   add() {
     console.log("add");
     this.isAddingUser = true;
-    this.isEditingUser = undefined;
     this.localUser = undefined;
     this.UserAccess = [];
-    for (const web of this.userWeb) {
+    for (const web of this.common.userWeb) {
       const wbacc = new UserWbsAccess(-1, Access.Unauthorized, web);
       this.UserAccess.push(wbacc);
     }
@@ -185,6 +112,7 @@ export class UserManagementComponent implements OnInit {
     // console.log(this.isEditingUser);
     if (this.addUserForm.invalid) {
       console.log("Form not valid");
+      window.scroll(0, 0);
       return;
     }
 
@@ -209,7 +137,7 @@ export class UserManagementComponent implements OnInit {
       this.localUser.userWeb = [];
     }
 
-    for (let web of this.userWeb) {
+    for (let web of this.common.userWeb) {
       let wbaccess: UserWbsAccess = this.localUser.userWeb.filter(uf => uf.websiteAccess === web)[0];
 
       if (!wbaccess) {
@@ -236,29 +164,17 @@ export class UserManagementComponent implements OnInit {
         }
       }
     }
-    // }
 
-    if (this.isEditingUser) {
-      this.userSvc.saveUser(this.localUser).subscribe({
-        next: (data) => {
-          this.loading = false;
-          this.init(true);
-        },
-        error: (error) => {
-          console.error('There was an error!', error);
-          this.loading = false;
-          this.error = 'server error';
-          window.scroll(0, 0);
-        }
-      });
-    } else if (this.isAddingUser) {
-      this.localUser.password = user.usr_password;
+    if (this.isAddingUser) {
+      const passHashed = this.authSvr.hashPassword(user.usr_password);
+      console.log(passHashed);
+      this.localUser.password = passHashed;
       this.userSvc.addUser(this.localUser).subscribe(
-       (data) => {
+        (data) => {
           this.loading = false;
           this.init(true);
         },
-       (error) => {
+        (error) => {
           console.error('There was an error!', error);
           console.log(error.error.description);
           this.loading = false;
@@ -272,9 +188,6 @@ export class UserManagementComponent implements OnInit {
         }
       );
     }
-
-    console.log(this.localUser);
-
   }
 
   init(listUsers: boolean) {
@@ -282,19 +195,6 @@ export class UserManagementComponent implements OnInit {
     this.submitted = false;
     this.message = '';
 
-    if (this.editUserForm === undefined) {
-      this.editUserForm = new FormGroup({
-        usr_userName: new FormControl("", Validators.required),
-        usr_firstName: new FormControl("", Validators.required),
-        usr_lastName: new FormControl("", Validators.required),
-        usr_email: new FormControl("", Validators.required),
-        usr_access0: new FormControl(),
-        usr_access1: new FormControl(),
-        usr_access2: new FormControl(),
-        usr_access3: new FormControl()
-      });
-      console.log("init form edit");
-    }
     if (this.addUserForm === undefined) {
       this.addUserForm = new FormGroup({
         usr_userName: new FormControl("", Validators.required),
@@ -307,11 +207,8 @@ export class UserManagementComponent implements OnInit {
         usr_access2: new FormControl(),
         usr_access3: new FormControl()
       });
-      console.log("init form add");
     }
 
-
-    this.isEditingUser = false;
     this.isAddingUser = false;
     this.UserAccess = [];
     this.error = undefined;
@@ -322,7 +219,7 @@ export class UserManagementComponent implements OnInit {
         (users: User[]) => {
           this.userList = users;
           this.loading = false;
-          // console.log(this.userList);
+          console.log(this.userList);
           // console.log(this.userList);
         },
         (error) => {
@@ -333,4 +230,13 @@ export class UserManagementComponent implements OnInit {
       );
     }
   }
+  convertDate(date: string): Date {
+
+    if (date) {
+      return new Date(date.substring(0, date.indexOf('[')));
+    }
+
+    return null;
+  }
+
 }

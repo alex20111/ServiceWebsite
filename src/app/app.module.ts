@@ -15,6 +15,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomePageComponent } from './home-page/home-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { EditUserComponent } from './user-management/edit-user/edit-user.component';
+import { InvNavComponent } from './nav-bar/inv-nav/inv-nav.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { InvgrpAddFormComponent } from './nav-bar/inv-nav/invgrp-add-form/invgrp-add-form.component';
+import { InventoryPageComponent } from './inventory-page/inventory-page.component';
+import { DataTablesModule } from 'angular-datatables';
+import { AddInventoryPageComponent } from './inventory-page/add-inventory-page/add-inventory-page.component';
 
 
 @NgModule({
@@ -26,14 +33,21 @@ import { UserManagementComponent } from './user-management/user-management.compo
     HomePageComponent,
     LoginPageComponent,
     UserManagementComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    EditUserComponent,
+    InvNavComponent,
+    InvgrpAddFormComponent,
+    InventoryPageComponent,
+    AddInventoryPageComponent
     ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule,
+    DataTablesModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
               { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }

@@ -1,18 +1,24 @@
 <div class="container-fluid">
+  <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+
   <h3> Current temperature</h3>
   <div class="row">
 
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-2 col-md-4 ">
-      <div class="card border-left-primary shadow h-100 py-2 mb-4">
+      <div class="card border-left-primary shadow py-2 mb-4">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Sun </div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">25 C</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800"> 
+                  <span *ngIf="loadingTemp" class="spinner-border spinner-border-sm mr-1"></span>
+                  <div *ngIf="temperature">{{temperature.tempSun}}</div>
+                </div>
             </div>
             <div class="col-auto">
-              <i class="fas fa-sun fa-2x text-gray-300"></i>
+              <i class="fas fa-sun fa-2x text-gray-300"></i><br/>
+              <small *ngIf="temperature">{{temperature.tmpSunUpdDt}}</small>
             </div>
           </div>
         </div>
@@ -20,28 +26,36 @@
 
       <!-- Earnings (Monthly) Card Example -->
 
-      <div class="card border-left-success shadow h-100 py-2 mb-4">
+      <div class="card border-left-success shadow py-2 mb-4">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Shade</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">21 C</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                <span *ngIf="loadingTemp" class="spinner-border spinner-border-sm mr-1"></span>
+                  <div *ngIf="temperature">{{temperature.tempShade}}</div>
+              </div>
             </div>
             <div class="col-auto">
-              <i class="fas fa-umbrella-beach fa-2x text-gray-300"></i>
+              <i class="fas fa-umbrella-beach fa-2x text-gray-300"></i> <br/>
+              <small *ngIf="temperature">{{temperature.tmpShadeUpdDt}}</small>
             </div>
           </div>
         </div>
       </div>
-      <div class="card border-left-info shadow h-100 py-2 mb-4">
+      <div class="card border-left-info shadow py-2 mb-4">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Pool</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">90 F</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                <span *ngIf="loadingTemp" class="spinner-border spinner-border-sm mr-1"></span>
+                  <div *ngIf="temperature">{{temperature.tempPool}}</div>
+              </div>
             </div>
             <div class="col-auto">
-                <i class="fas fa-swimming-pool fa-2x text-gray-300"></i>
+                <i class="fas fa-swimming-pool fa-2x text-gray-300"></i> <br/>
+                <small *ngIf="temperature">{{temperature.tmpPoolUpdDt}}</small>
             </div>
           </div>
         </div>

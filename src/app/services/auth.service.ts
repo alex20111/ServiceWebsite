@@ -6,11 +6,17 @@ import { map, catchError } from 'rxjs/operators';
 import { User } from '../_models/User';
 import { AuthUser } from '../_models/AuthUser';
 
+import * as sha512 from 'js-sha512';
+import { environment } from 'src/environments/environment';
+import { domainName } from '../helpers/domain';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
+  
+  apiUrl = domainName();
+  
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
@@ -31,17 +37,23 @@ export class AuthService {
    */
 
   public validateUser(authenticateUser: AuthUser): Observable<User> {
-
-    return this.http.post<User>('http://localhost:8080/webservice/webapi/auth/login', authenticateUser)
+    return this.http.post<User>(`${this.apiUrl}/bwservice/webapi/auth/login`, authenticateUser)
       .pipe(map(user => {
 
-          // user.access = 
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.currentUserSubject.next(user);
-          // console.log("user Valid:")
-          // console.log(user);
+          const signedUser: User = new User();
+          signedUser.access = user.access;
+          signedUser.authToken = user.authToken;
+          signedUser.email = user.email;
+          signedUser.firstName = user.firstName;
+          signedUser.lastLogin = user.lastLogin;
+          signedUser.lastName = user.lastName;
+          signedUser.userName = user.userName;
+          signedUser.id = user.id;
 
-          return user;
+          // user.access = 
+          localStorage.setItem('currentUser', JSON.stringify(signedUser));
+          this.currentUserSubject.next(signedUser);
+          return signedUser;
       })
       );
   }
@@ -60,5 +72,9 @@ export class AuthService {
   }
   isView(){
 
+  }
+
+  hashPassword(password: string): string{
+    return  sha512.sha512(password);
   }
 }
