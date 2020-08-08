@@ -31,7 +31,7 @@
             </td>
             <td>
                 <ng-template [ngIf]="user.lastLogin" [ngIfElse]="noDate">
-                    {{convertDate(user.lastLogin) | date:'medium' }}
+                    {{user.lastLogin | date:'medium' }}
                 </ng-template>
                 <ng-template #noDate>
                     Never Logged in

@@ -1,24 +1,52 @@
-
 <h1 class="mb-4"> Inventory list</h1>
-<h3>Group:  <a href title="Rename Group">{{title}}</a></h3>
-<hr/>
-<button class="btn btn-primary btn-sm mb-3 mr-2" style="float:left;" [routerLink]="['/invAdd']"><i class="fas fa-edit"></i>Add Item </button>
-<button class="btn btn-danger btn-sm mb-3 " style="float:left;" [routerLink]="['/invAdd']"><i class="fas fa-edit"></i>Delete Group </button>
-<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+
+
+  <h3>Group: <a *ngIf="!deleted && invGroup?.id > 0; else nolink" [routerLink]="" title="Rename Group" (click)="openFormModal()">{{title}}<i class="fas fa-edit ml-1"></i></a>
+    <ng-template #nolink>{{ title}}.</ng-template>
+  </h3>
+  <hr />
+ 
+    <p *ngIf="deleted" class="alert alert-info"> Group deleted</p> 
+    <p *ngIf="error" class="alert alert-danger"> {{error}} </p>  
+
+  <button *ngIf="!deleted" class="btn btn-primary btn-sm mb-3 mr-2" style="float:left;" [routerLink]="['/invAdd', invGroup?.id]"><i
+      class="fas fa-edit"></i>Add Item </button>
+  <button *ngIf="!deleted"  class="btn btn-danger btn-sm mb-3 " style="float:left;" (click)="deteleGroup(invGroup?.id)"><i class="fas fa-trash-alt mr-1"></i>Delete Group </button>
+
+  <div class="table-responsive">
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-striped table-bordered">
     <thead>
       <tr>
         <th></th>
+        <th></th>
         <th>Item Name</th>
+        <th>Reference</th>
         <th>Quantity</th>
         <th>Category</th>
+        <th>details</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of invGroup?.invItems; let i of index">
-        <td>{{i}}.</td>
+      <tr *ngFor="let item of invGroup?.invItems; index as i">
+        <td><i style="cursor: pointer;" class="far fa-trash-alt" title="Delete item" (click)="deleteItem(item)"></i></td>
+        <td>{{i}}. <img *ngIf="item.thumbBase64" src="{{'data:image/jpg;base64,' + item.thumbBase64}}" /></td>
         <td>{{ item.name }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let ref of item.references">
+              <a [href]="ref.referenceName" *ngIf="ref.type == 'html'; else elseBlock"
+                target="_blank">{{ ref.referenceName}}</a>
+              <ng-template #elseBlock>{{ ref.referenceName}}.</ng-template>
+            </li>
+
+          </ul>
+        </td>
         <td>{{ item.qty }}</td>
         <td>{{ item.category }}</td>
+        <td>{{ item.details }}</td>
+        <td><button (click)="editItem(item)" class="btn btn-primary btn-sm">Edit</button></td>
       </tr>
     </tbody>
-    </table>
+  </table>
+</div>

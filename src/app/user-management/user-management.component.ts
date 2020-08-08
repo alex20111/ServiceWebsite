@@ -230,13 +230,13 @@ export class UserManagementComponent implements OnInit {
       );
     }
   }
-  convertDate(date: string): Date {
+  // convertDate(date: string): Date {
+  //   console.log('Date recieved: ' , date);
+  //   if (date) {
+  //     return new Date(date.substring(0, date.indexOf('[')));
+  //   }
 
-    if (date) {
-      return new Date(date.substring(0, date.indexOf('[')));
-    }
-
-    return null;
-  }
+  //   return null;
+  // }
 
 }

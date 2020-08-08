@@ -22,6 +22,8 @@ import { InvgrpAddFormComponent } from './nav-bar/inv-nav/invgrp-add-form/invgrp
 import { InventoryPageComponent } from './inventory-page/inventory-page.component';
 import { DataTablesModule } from 'angular-datatables';
 import { AddInventoryPageComponent } from './inventory-page/add-inventory-page/add-inventory-page.component';
+import { EditInventoryPageComponent } from './inventory-page/edit-inventory-page/edit-inventory-page.component';
+import { NewGroupNameModalComponent } from './inventory-page/new-group-name-modal/new-group-name-modal.component';
 
 
 @NgModule({
@@ -38,7 +40,9 @@ import { AddInventoryPageComponent } from './inventory-page/add-inventory-page/a
     InvNavComponent,
     InvgrpAddFormComponent,
     InventoryPageComponent,
-    AddInventoryPageComponent
+    AddInventoryPageComponent,
+    EditInventoryPageComponent,
+    NewGroupNameModalComponent
     ],
   imports: [
     BrowserModule,

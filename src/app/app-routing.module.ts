@@ -1,3 +1,4 @@
+import { EditInventoryPageComponent } from './inventory-page/edit-inventory-page/edit-inventory-page.component';
 import { AddInventoryPageComponent } from './inventory-page/add-inventory-page/add-inventory-page.component';
 import { InventoryPageComponent } from './inventory-page/inventory-page.component';
 import { EditUserComponent } from './user-management/edit-user/edit-user.component';
@@ -17,8 +18,9 @@ const routes: Routes = [
   { path: 'users/:add', component: UserManagementComponent,  canActivate: [AuthGuard]  },
   { path: 'editUser/:usr', component: EditUserComponent,  canActivate: [AuthGuard]  },
   { path: 'changePass', component: ChangePasswordComponent,  canActivate: [AuthGuard]  },
-  { path: 'inv/:invId', component: InventoryPageComponent,  canActivate: [AuthGuard]  },
-  { path: 'invAdd', component: AddInventoryPageComponent,  canActivate: [AuthGuard]  },
+  { path: 'inv/:invId', component: InventoryPageComponent,  canActivate: [AuthGuard] },
+  { path: 'invEdit/:itmId', component: EditInventoryPageComponent,  canActivate: [AuthGuard] },
+  { path: 'invAdd/:grpId', component: AddInventoryPageComponent,  canActivate: [AuthGuard]  },
   { path: '', component: HomePageComponent }
 
 ];
@@ -28,3 +30,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+

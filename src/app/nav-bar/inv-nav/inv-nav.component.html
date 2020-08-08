@@ -7,10 +7,14 @@
   <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
       <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
+      <button class="btn btn-link collapse-item" [routerLink]="['/inv','all']"> <i class="fas fa-boxes"></i> Load all items</button>
+      <div *ngIf="invSrv.groupList().length; else emptyGroupList">
       <a *ngFor="let grp of invSrv.groupList()" class="collapse-item" href [routerLink]="['/inv',grp.id]">
         <i class="fas fa-pallet"></i>
         {{grp.groupName}}
       </a>
+    </div>
+    <ng-template #emptyGroupList> <div class="collapse-item" ><i class="fas fa-box-tissue mr-2"></i>No groups</div></ng-template>
 
       <button class="btn btn-link collapse-item" (click)="openFormModal()"> <i class="fas fa-plus-circle"></i> Add new group</button>
 

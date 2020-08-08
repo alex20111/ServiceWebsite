@@ -1,15 +1,18 @@
-<h3 class="page-header">Add Item</h3>
+<h2> Edit Inventory Item </h2>
 <hr/>
+<div *ngIf="loading" class="spinner-border spinner-border-sm"></div>
+<div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+
 <div class="row">
     <div class="col-md-5">
-        <form [formGroup]="addItemForm" (ngSubmit)="addInvItem()">
+        <form [formGroup]="editForm" (ngSubmit)="submit()">
             <div class="form-group">
                 <label for="nameValidation">Name</label>
                 <input type="text" class="form-control " id="nameValidation" placeholder="Item name" required
-                    formControlName="inv_name" [ngClass]="{'is-invalid': fAdd.inv_name.errors && ( (fAdd.inv_name.touched || fAdd.inv_name.dirty) || submitted )      }">
-                    <div *ngIf="fAdd.inv_name.errors && ( (fAdd.inv_name.touched || fAdd.inv_name.dirty) || submitted )" class="invalid-feedback mb-1">
-                        <div *ngIf="fAdd.inv_name.errors?.required">Please provide a valid Item name.</div>
-                        <div *ngIf="fAdd.inv_name.errors?.minlength">Group name must be greater than 2 character.</div>
+                    formControlName="inv_name" [ngClass]="{'is-invalid': f.inv_name.errors && ( (f.inv_name.touched || f.inv_name.dirty) || submitted )      }">
+                    <div *ngIf="f.inv_name.errors && ( (f.inv_name.touched || f.inv_name.dirty) || submitted )" class="invalid-feedback mb-1">
+                        <div *ngIf="f.inv_name.errors?.required">Please provide a valid Item name.</div>
+                        <div *ngIf="f.inv_name.errors?.minlength">Group name must be greater than 2 character.</div>
                     </div>
             </div>
 
@@ -18,10 +21,10 @@
                     <div class="col-sm-2 col-lg-2">
                         <label for="quantityValidation"> Quantity:</label><br />
                         <input type="text" id="quantityValidation" formControlName="inv_qty" class="form-control"
-                            [ngClass]="{'is-invalid':   fAdd.inv_qty.errors && ( (fAdd.inv_qty.touched || fAdd.inv_qty.dirty) || submitted ) }"  >
-                            <div *ngIf="fAdd.inv_qty.errors && ( (fAdd.inv_qty.touched || fAdd.inv_qty.dirty) || submitted )" class="invalid-feedback mb-1">
-                                <div *ngIf="fAdd.inv_qty.errors?.required">Please provide a valid Item name.</div>
-                                <div *ngIf="fAdd.inv_qty.errors?.mustBeNumber">Only numbers are accepted</div>
+                            [ngClass]="{'is-invalid':   f.inv_qty.errors && ( (f.inv_qty.touched || f.inv_qty.dirty) || submitted ) }"  >
+                            <div *ngIf="f.inv_qty.errors && ( (f.inv_qty.touched || f.inv_qty.dirty) || submitted )" class="invalid-feedback mb-1">
+                                <div *ngIf="f.inv_qty.errors?.required">Please provide a valid Item name.</div>
+                                <div *ngIf="f.inv_qty.errors?.mustBeNumber">Only numbers are accepted</div>
                             </div>
                     </div>
                 </div>
@@ -61,13 +64,12 @@
 
             <div class="form-group">
                 <label for="detailsValidation">Details: </label>
-                <textarea id="detailsValidation" formControlName="inv_details" class="form-control" cols="70" rows="8"> </textarea>
-               
+                <textarea id="detailsValidation" formControlName="inv_details" class="form-control" cols="70" rows="8"> </textarea>               
             </div>
 
             <div class="form-group">
                 <label for="FileUploadValidation">Thumbnail: </label>
-                <input type="file" id="FileUploadValidation"  class="form-control" (change)="fileProgress($event)"/>
+                <input type="file" id="FileUploadValidation"  class="form-control mb-2" (change)="fileProgress($event)"/>
                 <div class="image-preview mb-3" *ngIf="previewUrl">
                     <img [src]="previewUrl" height="100" width="100" />
                   </div>               
