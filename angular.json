@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "test1": {
+    "HomeWebsite": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/test1",
+            "outputPath": "dist/HomeWebsite",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -27,13 +27,11 @@
               "src/styles.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "src/css/sb-admin-2.min.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/datatables.net-dt/css/jquery.dataTables.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/datatables.net/js/jquery.dataTables.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
 
             ]
           },
@@ -71,18 +69,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "test1:build"
+            "browserTarget": "HomeWebsite:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "test1:build:production"
+              "browserTarget": "HomeWebsite:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "test1:build"
+            "browserTarget": "HomeWebsite:build"
           }
         },
         "test": {
@@ -119,15 +117,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "test1:serve"
+            "devServerTarget": "HomeWebsite:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "test1:serve:production"
+              "devServerTarget": "HomeWebsite:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "test1"
+  "defaultProject": "HomeWebsite"
 }

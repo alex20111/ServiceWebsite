@@ -1,28 +1,40 @@
+import { FormControl } from '@angular/forms';
 import { NewGroupNameModalComponent } from './new-group-name-modal/new-group-name-modal.component';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryService } from '../services/inventory.service';
-import { Subject } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DecimalPipe } from '@angular/common';
+
+function search(text: string, pipe: PipeTransform, items: any): any {
+  return items.filter(inv => {
+    const term = text.toLowerCase();
+    return (
+      inv.name.toLowerCase().includes(term) ||
+      pipe.transform(inv.qty).includes(term) ||
+      inv.category.toLowerCase().includes(term) ||
+      inv.details.toLowerCase().includes(term)
+    );
+  });
+}
 
 @Component({
   selector: 'app-inventory-page',
   templateUrl: './inventory-page.component.html',
-  styleUrls: ['./inventory-page.component.css']
+  styleUrls: ['./inventory-page.component.css'],
+  providers: [DecimalPipe]
 })
 
 // display the inventory item list for the group
-
 export class InventoryPageComponent implements OnDestroy, OnInit {
-  @ViewChild(DataTableDirective, { static: false })
-  dtElement: DataTableDirective;
 
-  dtOptions: DataTables.Settings = {};
-  // We use this trigger because fetching the list of persons can be quite long,
-  // thus we ensure the data is fetched before rendering
-  dtTrigger: Subject<any> = new Subject();
+  filter: any = ''; //textbox to filter
+
   invGroup: any;  // inventory list page group information also containing the item list
+  filteredInvGroup$: any[] = [];
+  page = 1;
+  pageSize = 15;
+  collectionSize = 0;
 
   // page title
   title: string;
@@ -32,16 +44,11 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
   //error messages:
   error: string;
 
-  constructor(private route: ActivatedRoute,
-    public invSrv: InventoryService, private modalService: NgbModal, private router: Router) { }
+  constructor(private route: ActivatedRoute, private pipe: DecimalPipe,
+    public invSrv: InventoryService, private modalService: NgbModal, private router: Router) {
+  }
 
   ngOnInit(): void {
-    console.log("Init inventory");
-
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 15
-    };
 
     this.route.params.subscribe(params => {
 
@@ -53,10 +60,10 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
       if (id !== 'all') {
         this.invSrv.loadGroupItems(id).subscribe(
           (items: any) => {
-            // console.log('Group items: ', items);
+            console.log('Group items: ', items);
             this.invGroup = items;
+            this.refreshFilterInvGroup();
             this.title = items.groupName;
-            this.rerender();
           },
           (error) => {
             console.log('Load Group error', error);
@@ -71,34 +78,17 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
+    // this.dtTrigger.unsubscribe();
   }
-  rerender(): void {
-    if (this.dtElement) {
-      if (this.dtElement.dtInstance) {
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          // Destroy the table first
-          dtInstance.destroy();
-          // Call the dtTrigger to rerender again
-          this.dtTrigger.next();
-        });
-      } else {
-        this.dtTrigger.next();
-      }
-    } else {
-      this.dtTrigger.next();
-    }
-  }
-
   deteleGroup(groupId: string) {
     if (confirm('Are you sure to delete the group?')) {
 
       this.invSrv.deleteGroup(groupId).subscribe(
         (result) => {
           this.deleted = true;
-          if (this.invGroup.invItems?.length > 0){
+          if (this.invGroup.invItems?.length > 0) {
             this.invGroup.invItems = [];
-            this.rerender();
+            this.refreshFilterInvGroup();
           }
         },
         (error) => {
@@ -125,7 +115,6 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
           console.log("group updated");
           this.title = updGrp.groupName;
         }
-
       );
 
     }).catch((error) => {
@@ -136,14 +125,12 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
     });
   }
   deleteItem(item) {
-    console.log("item to delete: ", item);
     if (confirm('Are you sure to delete the item?')) {
       this.invSrv.deleteItem(item.id).subscribe(
         (result) => {
           console.log("Result of deleting item: ", result);
           this.invGroup.invItems = this.invGroup.invItems.filter(it => it.id !== item.id);
-
-          this.rerender();
+          this.refreshFilterInvGroup();
         },
         (error) => {
           console.log('Error deleting item', error);
@@ -156,16 +143,46 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
     console.log('Load all items');
     this.invSrv.loadAllInventoryItems().subscribe(
       (itmList) => {
-        console.log("All item list", itmList);
         this.invGroup = itmList;
+        this.refreshFilterInvGroup();
         this.title = itmList.groupName;
-        this.rerender();
       }
     );
   }
 
-  editItem(item: any){
+  editItem(item: any) {
     this.invSrv.populateItemToEdit(item);
     this.router.navigate(['/invEdit', item.id]);
   }
+
+  // pagination changed
+  refreshTable(refreshItem: any) { // coming from the html page. 
+    // console.log("Refresh item: " , refreshItem);
+    let ref;
+    if (refreshItem !== 'inv') {
+      // console.log('not eq inv');
+      ref = refreshItem;
+    } else {
+      ref = this.invGroup.invItems;
+    }
+
+    this.filteredInvGroup$ = ref
+      .map((itm, i) => ({ idx: i + 1, ...itm }))
+      .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+  }
+
+  // search filter changed// coming from the textbox.
+  filterChanged(text): void {
+    const result = search(text, this.pipe, this.invGroup.invItems);
+    this.page  = 1;
+    this.refreshTable(result);
+    this.collectionSize = result.length;
+  }
+
+  refreshFilterInvGroup() {
+    this.refreshTable(this.invGroup.invItems);
+    this.collectionSize = this.invGroup.invItems.length;
+  }
+
+
 }

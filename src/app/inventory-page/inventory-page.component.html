@@ -1,52 +1,78 @@
 <h1 class="mb-4"> Inventory list</h1>
 
+<h3>Group: <a *ngIf="!deleted && invGroup?.id > 0; else nolink" [routerLink]="" title="Rename Group"
+    (click)="openFormModal()">{{title}}<i class="fas fa-edit ml-1"></i></a>
+  <ng-template #nolink>{{ title}}.</ng-template>
+</h3>
+<hr />
 
-  <h3>Group: <a *ngIf="!deleted && invGroup?.id > 0; else nolink" [routerLink]="" title="Rename Group" (click)="openFormModal()">{{title}}<i class="fas fa-edit ml-1"></i></a>
-    <ng-template #nolink>{{ title}}.</ng-template>
-  </h3>
-  <hr />
- 
-    <p *ngIf="deleted" class="alert alert-info"> Group deleted</p> 
-    <p *ngIf="error" class="alert alert-danger"> {{error}} </p>  
-
-  <button *ngIf="!deleted" class="btn btn-primary btn-sm mb-3 mr-2" style="float:left;" [routerLink]="['/invAdd', invGroup?.id]"><i
-      class="fas fa-edit"></i>Add Item </button>
-  <button *ngIf="!deleted"  class="btn btn-danger btn-sm mb-3 " style="float:left;" (click)="deteleGroup(invGroup?.id)"><i class="fas fa-trash-alt mr-1"></i>Delete Group </button>
-
-  <div class="table-responsive">
-  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table-striped table-bordered">
-    <thead>
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Item Name</th>
-        <th>Reference</th>
-        <th>Quantity</th>
-        <th>Category</th>
-        <th>details</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of invGroup?.invItems; index as i">
-        <td><i style="cursor: pointer;" class="far fa-trash-alt" title="Delete item" (click)="deleteItem(item)"></i></td>
-        <td>{{i}}. <img *ngIf="item.thumbBase64" src="{{'data:image/jpg;base64,' + item.thumbBase64}}" /></td>
-        <td>{{ item.name }}</td>
-        <td>
-          <ul>
-            <li *ngFor="let ref of item.references">
-              <a [href]="ref.referenceName" *ngIf="ref.type == 'html'; else elseBlock"
-                target="_blank">{{ ref.referenceName}}</a>
-              <ng-template #elseBlock>{{ ref.referenceName}}.</ng-template>
-            </li>
-
-          </ul>
-        </td>
-        <td>{{ item.qty }}</td>
-        <td>{{ item.category }}</td>
-        <td>{{ item.details }}</td>
-        <td><button (click)="editItem(item)" class="btn btn-primary btn-sm">Edit</button></td>
-      </tr>
-    </tbody>
-  </table>
+<p *ngIf="deleted" class="alert alert-info"> Group deleted</p>
+<p *ngIf="error" class="alert alert-danger"> {{error}} </p>
+<div>
+  <button *ngIf="!deleted" class="btn btn-primary btn-sm mb-3 mr-2" style="float:left;"
+    [routerLink]="['/invAdd', invGroup?.id]"><i class="fas fa-edit"></i>Add Item </button>
+  <button *ngIf="!deleted" class="btn btn-danger btn-sm mb-3 " style="float:left;"
+    (click)="deteleGroup(invGroup?.id)"><i class="fas fa-trash-alt mr-1"></i>Delete Group </button>
 </div>
+<div *ngIf="!deleted" style="float:right;" class="form-row">
+  <div class="col">
+    Items per page
+    <select class="form-control" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshTable('inv')">
+      <option [ngValue]="5">5 </option>
+      <option [ngValue]="10">10 </option>
+      <option [ngValue]="15">15 </option>
+      <option [ngValue]="20">20 </option>
+      <option [ngValue]="50">50 </option>
+      <option [ngValue]="100">100 </option>
+    </select>
+  </div>
+  <div class="col">
+    search: <input type="text" [(ngModel)]="filter" class="form-control" (ngModelChange)="filterChanged($event)" />
+  </div>
+</div>
+
+<table class="table table-striped table-responsive">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Item Name</th>
+      <th>Reference</th>
+      <th>Quantity</th>
+      <th>Category</th>
+      <th>details</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of filteredInvGroup$; index as i">
+
+      <td><i style="cursor: pointer;" class="far fa-trash-alt" title="Delete item" (click)="deleteItem(item)"></i></td>
+      <td>{{item.idx}}. <img *ngIf="item.thumbBase64" src="{{'data:image/jpg;base64,' + item.thumbBase64}}" /></td>
+      <td>
+        <ngb-highlight [result]="item.name" [term]="filter"></ngb-highlight>
+      </td>
+      <td>
+        <ul>
+          <li *ngFor="let ref of item.references">
+            <a [href]="ref.referenceName" *ngIf="ref.type == 'html'; else elseBlock"
+              target="_blank">{{ ref.referenceName}}</a>
+            <ng-template #elseBlock>{{ ref.referenceName}}.</ng-template>
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ngb-highlight [result]="item.qty | number" [term]="filter"></ngb-highlight>
+      </td>
+      <td>
+        <ngb-highlight [result]="item.category" [term]="filter"></ngb-highlight>
+      </td>
+      <td>
+        <ngb-highlight [result]="item.details" [term]="filter"></ngb-highlight>
+      </td>
+      <td><button (click)="editItem(item)" class="btn btn-primary btn-sm">Edit</button></td>
+    </tr>
+  </tbody>
+</table>
+<ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshTable('inv')">
+</ngb-pagination>

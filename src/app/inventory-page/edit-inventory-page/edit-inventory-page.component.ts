@@ -64,7 +64,8 @@ export class EditInventoryPageComponent implements OnInit {
 
         for (let rf of item.references) {
           this.r.push(this.formBuilder.group({
-            inv_ref_name: [rf.referenceName],
+            inv_ref_id: [rf.id],
+            inv_ref_name: [rf.referenceName], 
             inv_link_html: [(rf.type === 'html' ? true : false)]
           }));
         }
@@ -93,6 +94,7 @@ export class EditInventoryPageComponent implements OnInit {
     let ref = [];
     formValue.references.forEach((value, index) => {
       ref[index] = {
+        id: value.inv_ref_id,
         referenceName: value.inv_ref_name,
         type: (value.inv_link_html ? 'html' : 'text')
       };
@@ -146,6 +148,7 @@ export class EditInventoryPageComponent implements OnInit {
     $event.preventDefault(); //to not sub,mit the form
     console.log("add ref");
     this.r.push(this.formBuilder.group({
+      inv_ref_id: [-1],
       inv_ref_name: [''],
       inv_link_html: [false]
     }));
@@ -162,6 +165,7 @@ export class EditInventoryPageComponent implements OnInit {
     html = !html; // swithc it
 
     gh.setValue({
+      inv_ref_id: gh.value.inv_ref_id,
       inv_ref_name: gh.value.inv_ref_name,
       inv_link_html: html
     });

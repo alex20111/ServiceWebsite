@@ -8,6 +8,7 @@
     <div class="bg-white py-2 collapse-inner rounded">
       <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
       <button class="btn btn-link collapse-item" [routerLink]="['/inv','all']"> <i class="fas fa-boxes"></i> Load all items</button>
+      <input *ngIf="invSrv.groupList().length > 0 " type="text" class="form-control collapse-item" placeholder="Search" style="width: 150px"/>
       <div *ngIf="invSrv.groupList().length; else emptyGroupList">
       <a *ngFor="let grp of invSrv.groupList()" class="collapse-item" href [routerLink]="['/inv',grp.id]">
         <i class="fas fa-pallet"></i>

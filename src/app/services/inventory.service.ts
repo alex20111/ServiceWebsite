@@ -35,7 +35,7 @@ export class InventoryService {
   }
 
   addItemToGroup(item: any): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/bwservice/webapi/inv/addItem', item);
+    return this.http.post<any>(`${this.apiUrl}/bwservice/webapi/inv/addItem`, item);
   }
 
   loadGroupItems(id: string): Observable<any> {
@@ -56,7 +56,7 @@ export class InventoryService {
     return this.http.post<any>(`${this.apiUrl}/bwservice/webapi/inv/deleteItem/`, itemId);
   }
   updateGroupName(newGroupName: any): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/bwservice/webapi/inv/updateGroupName', newGroupName).pipe(
+    return this.http.post<any>(`${this.apiUrl}/bwservice/webapi/inv/updateGroupName`, newGroupName).pipe(
       map((newGrp) => {
         let indx = this.invGroupList.findIndex(g => g.id === newGrp.id);
 
@@ -71,7 +71,7 @@ export class InventoryService {
   }
 
   updateItem(item): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/bwservice/webapi/inv/updateItem', item).pipe(
+    return this.http.post<any>(`${this.apiUrl}/bwservice/webapi/inv/updateItem`, item).pipe(
       map(updItem => {
         this.itemToEdit = null;
         return updItem;

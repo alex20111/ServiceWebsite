@@ -10,7 +10,6 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
-import { RadioPageComponent } from './radio-page/radio-page.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomePageComponent } from './home-page/home-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -20,10 +19,10 @@ import { InvNavComponent } from './nav-bar/inv-nav/inv-nav.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { InvgrpAddFormComponent } from './nav-bar/inv-nav/invgrp-add-form/invgrp-add-form.component';
 import { InventoryPageComponent } from './inventory-page/inventory-page.component';
-import { DataTablesModule } from 'angular-datatables';
 import { AddInventoryPageComponent } from './inventory-page/add-inventory-page/add-inventory-page.component';
 import { EditInventoryPageComponent } from './inventory-page/edit-inventory-page/edit-inventory-page.component';
 import { NewGroupNameModalComponent } from './inventory-page/new-group-name-modal/new-group-name-modal.component';
+import { InventoryItemSearchComponent } from './inventory-page/inventory-item-search/inventory-item-search.component';
 
 
 @NgModule({
@@ -31,7 +30,6 @@ import { NewGroupNameModalComponent } from './inventory-page/new-group-name-moda
     AppComponent,
     NavBarComponent,
     TopNavComponent,
-    RadioPageComponent,
     HomePageComponent,
     LoginPageComponent,
     UserManagementComponent,
@@ -42,7 +40,8 @@ import { NewGroupNameModalComponent } from './inventory-page/new-group-name-moda
     InventoryPageComponent,
     AddInventoryPageComponent,
     EditInventoryPageComponent,
-    NewGroupNameModalComponent
+    NewGroupNameModalComponent,
+    InventoryItemSearchComponent
     ],
   imports: [
     BrowserModule,
@@ -50,8 +49,7 @@ import { NewGroupNameModalComponent } from './inventory-page/new-group-name-moda
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgbModule,
-    DataTablesModule
+    NgbModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
               { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }

@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'test1';
+  title = 'HomeWebsite';
   // toggleSideMenu = false; // emmit comment or var to parent
 
 // from button click or other // Also need to update the html in the parent compontent.. see app.component.html.
