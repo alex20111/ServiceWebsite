@@ -17,7 +17,7 @@
             <label>Email: </label>
             <input type="text" formControlName="usr_email" class="form-control" /><br />
 
-            <div class="mt-2">
+            <div *ngIf="canEditAccessLevel" class="mt-2">
                 <b>Website:<br /></b>
                 <table class="table">
                     <tr>

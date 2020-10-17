@@ -43,7 +43,7 @@ export class InventoryService {
   }
 
   deleteGroup(groupid: string): Observable<any> {
-    console.log("deleting id: ", groupid);
+
     return this.http.post<any>(`${this.apiUrl}/bwservice/webapi/inv/deleteGroup/`, groupid)
       .pipe(map(
         (result) => {

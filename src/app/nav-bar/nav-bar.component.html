@@ -22,7 +22,7 @@
     <li class="nav-item">
       <a class="nav-link ">
         <i class="fas fa-fw fa-cog"></i>
-        <span>Weather</span>
+        <span>Something </span>
       </a>
 
     </li>
@@ -39,13 +39,14 @@
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-          aria-controls="collapsePages">
+      <li class="nav-item"> 
+        <a class="nav-link collapsed" href="#" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">    
           <i class="fas fa-fw fa-folder"></i>
-          <span>Manage users</span>
+          
+          <span>Manage users <i class="fas  mt-2" style="float:right;font-size: 12px;"  [ngClass]="{ 'fa-chevron-right': isCollapsed, 'fa-chevron-down': !isCollapsed }" ></i></span>  
         </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+      
+        <div id="collapseExample" [ngbCollapse]="isCollapsed">      
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Login Screens:</h6>
             <a class="collapse-item" href [routerLink]="['/users',0]">List Users</a>

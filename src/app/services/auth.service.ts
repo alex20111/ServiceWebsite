@@ -77,4 +77,12 @@ export class AuthService {
   hashPassword(password: string): string{
     return  sha512.sha512(password);
   }
+  updateSessionUser(editedUser: User) {
+    let usr: User = this.currentUserSubject.value;
+    usr.lastName = editedUser.lastName;
+    usr.userName = editedUser.userName;
+    usr.firstName = editedUser.firstName;
+    usr.email = editedUser.email;
+    localStorage.setItem('currentUser', JSON.stringify(usr));
+  }
 }

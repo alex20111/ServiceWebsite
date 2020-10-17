@@ -5,6 +5,7 @@ import { User } from 'src/app/_models/User';
 import { UserService } from 'src/app/services/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserWbsAccess } from 'src/app/_models/UserWbsAccess';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-edit-user',
@@ -17,13 +18,14 @@ export class EditUserComponent implements OnInit {
 
   common: UserCommon = new UserCommon(); // containing information for add and edit
   loading = false;
+  canEditAccessLevel = false; // if the user can edit or change the website access level.
 
   editUserForm: FormGroup;
   editUser: User;
 
   UserAccess: UserWbsAccess[] = []; //website access level. sorted by Websites enum.
 
-  constructor(private userSvc: UserService, private route: ActivatedRoute) { }
+  constructor(private userSvc: UserService, private route: ActivatedRoute, private authSrv: AuthService) { }
 
   ngOnInit(): void {
     if (this.editUserForm === undefined) {
@@ -40,14 +42,15 @@ export class EditUserComponent implements OnInit {
     }
 
     this.route.paramMap.subscribe(params => {
-      console.log(params);
-      let userId = params.get('usr');
+      // console.log(params);
+      const userId = params.get('usr');
       if (userId !== undefined) {
 
         //get user
         this.userSvc.getUserById(userId).subscribe(
           svcUser => {
             console.log('Got user', svcUser);
+            this.canEditAccessLevel = this.authSrv.isAdmin();
             this.editUser = svcUser;
             this.initEdit();
           },
@@ -65,7 +68,7 @@ export class EditUserComponent implements OnInit {
     console.log('update user');
     // console.log(this.isEditingUser);
     if (!this.editUserForm.valid) {
-      console.log("Form not valid");
+      // console.log("Form not valid");
       return;
     }
 
@@ -78,44 +81,48 @@ export class EditUserComponent implements OnInit {
     this.editUser.firstName = user.usr_firstName;
     this.editUser.email = user.usr_email;
 
-    // verify if the user has already some access.. if yes, update the index (id )
-    if (this.editUser.userWeb === undefined || this.editUser.userWeb.length === 0) {
-      this.editUser.userWeb = [];
-    }
+    if (this.canEditAccessLevel) { // if user can edit access level.. if not return empty array.
+      // verify if the user has already some access.. if yes, update the index (id )
+      if (this.editUser.userWeb === undefined || this.editUser.userWeb.length === 0) {
+        this.editUser.userWeb = [];
+      }
 
-    for (let web of this.common.userWeb) {
-      let wbaccess: UserWbsAccess = this.editUser.userWeb.filter(uf => uf.websiteAccess === web)[0];
+      for (const web of this.common.userWeb) {
+        let wbaccess: UserWbsAccess = this.editUser.userWeb.filter(uf => uf.websiteAccess === web)[0];
 
       if (!wbaccess) {
         wbaccess = new UserWbsAccess(-1, this.common.acc.Unauthorized, web);
         this.editUser.userWeb.push(wbaccess);
       }
 
-      switch (web) {
-        case this.common.web.service: {
-          wbaccess.accessLevel = user.usr_access0;
-          break;
-        }
-        case this.common.web.Isabelle: {
-          wbaccess.accessLevel = user.usr_access1;
-          break;
-        }
-        case this.common.web.Mathieu: {
-          wbaccess.accessLevel = user.usr_access2;
-          break;
-        }
-        case this.common.web.Headless: {
-          wbaccess.accessLevel = user.usr_access3;
-          break;
+        switch (web) {
+          case this.common.web.service: {
+            wbaccess.accessLevel = user.usr_access0;
+            break;
+          }
+          case this.common.web.Isabelle: {
+            wbaccess.accessLevel = user.usr_access1;
+            break;
+          }
+          case this.common.web.Mathieu: {
+            wbaccess.accessLevel = user.usr_access2;
+            break;
+          }
+          case this.common.web.Headless: {
+            wbaccess.accessLevel = user.usr_access3;
+            break;
+          }
         }
       }
+    } else {
+      this.editUser.userWeb = []; // return empty array if no access to edit..
     }
-
-
+    console.log('User to update: ', this.editUser);
     this.userSvc.saveUser(this.editUser).subscribe({
       next: (data) => {
         this.loading = false;
         this.message = 'Update successful';
+        this.authSrv.updateSessionUser(this.editUser);
       },
       error: (error) => {
         console.error('There was an error!', error);
@@ -145,8 +152,9 @@ export class EditUserComponent implements OnInit {
       usr_access3: ''
     });
 
-    let idx = 0;// build website access. match
-    for (const web of this.common.userWeb) {
+    if (this.canEditAccessLevel) {
+      let idx = 0; // build website access. match
+      for (const web of this.common.userWeb) {
 
       const wbaccess = this.editUser.userWeb.filter(uf => uf.websiteAccess === web)[0];
       let websiteAccess;
@@ -160,27 +168,28 @@ export class EditUserComponent implements OnInit {
         this.UserAccess.push(wbacc);
       }
 
-      switch (idx) {
-        case 0: {
-          this.editUserForm.patchValue({ usr_access0: websiteAccess }); // update the form to set the right value
-          break;
+        switch (idx) {
+          case 0: {
+            this.editUserForm.patchValue({ usr_access0: websiteAccess }); // update the form to set the right value
+            break;
+          }
+          case 1: {
+            this.editUserForm.patchValue({ usr_access1: websiteAccess }); // update the form to set the right value
+            break;
+          }
+          case 2: {
+            this.editUserForm.patchValue({ usr_access2: websiteAccess }); // update the form to set the right value
+            break;
+          }
+          case 3: {
+            this.editUserForm.patchValue({ usr_access3: websiteAccess }); // update the form to set the right value
+            break;
+          }
         }
-        case 1: {
-          this.editUserForm.patchValue({ usr_access1: websiteAccess }); // update the form to set the right value
-          break;
-        }
-        case 2: {
-          this.editUserForm.patchValue({ usr_access2: websiteAccess }); // update the form to set the right value
-          break;
-        }
-        case 3: {
-          this.editUserForm.patchValue({ usr_access3: websiteAccess }); // update the form to set the right value
-          break;
-        }
+        idx++;
       }
-      idx++;
     }
-    console.log(this.UserAccess);
+    // console.log(this.UserAccess);
   }
 
 }

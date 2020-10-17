@@ -12,6 +12,7 @@ import { User } from '../_models/User';
 export class TopNavComponent implements OnInit {
 
   public userLogged: User;
+  collapsed = true;
 
   constructor(private authSvc: AuthService, private router: Router) {
     this.authSvc.getCurrObservableUserLogged().subscribe(u => this.userLogged = u);

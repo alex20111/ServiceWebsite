@@ -13,6 +13,7 @@ import 'src/js/sb-admin-2.min.js';
 export class NavBarComponent implements OnInit {
   userLogged: User;
   extendSideMenu: boolean;
+  isCollapsed = true;
 
   // @Output() childMessage = new EventEmitter<boolean>();
 

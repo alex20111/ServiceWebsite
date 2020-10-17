@@ -12,7 +12,7 @@ import { InvgrpAddFormComponent } from './invgrp-add-form/invgrp-add-form.compon
 })
 export class InvNavComponent implements OnInit, OnDestroy {
   loading = true;
-
+  isCollapsed = true;
 
   constructor(public invSrv: InventoryService,
               private modalService: NgbModal) { }
