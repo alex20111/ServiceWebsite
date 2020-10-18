@@ -10,7 +10,7 @@
     <div class="bg-white py-2 collapse-inner rounded">
 
       <button  *ngIf="invSrv.groupList().length"  class="btn btn-link collapse-item" [routerLink]="['/inv','all']"> <i class="fas fa-boxes"></i> Load all items</button>
-      <input *ngIf="invSrv.groupList().length > 0 " type="text" class="form-control collapse-item" placeholder="Search" style="width: 150px"/>
+      <button  *ngIf="invSrv.groupList().length"  class="btn btn-link collapse-item" [routerLink]="['/invSearch']"> <i class="fas fa-search"></i> Search</button>
       <div *ngIf="invSrv.groupList().length; else emptyGroupList">
       <a *ngFor="let grp of invSrv.groupList()" class="collapse-item" href [routerLink]="['/inv',grp.id]">
         <i class="fas fa-pallet"></i>

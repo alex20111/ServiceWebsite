@@ -57,7 +57,13 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
       // Retrieve the product by id
       let id = params["invId"];
 
-      if (id !== 'all') {
+      if (id === 'all') {
+        this.loadAllItems();
+      } else if (id === 'search') {
+        this.invGroup = this.invSrv.searchItemsResult;
+        this.refreshFilterInvGroup();
+        this.title = this.invGroup.groupName;
+      } else {
         this.invSrv.loadGroupItems(id).subscribe(
           (items: any) => {
             console.log('Group items: ', items);
@@ -66,12 +72,10 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
             this.title = items.groupName;
           },
           (error) => {
-            console.log('Load Group error', error);
+            console.error('Load Group error', error);
             this.error = 'An error occured while loading the items for the group';
           }
         );
-      } else {
-        this.loadAllItems();
       }
     });
   }
@@ -92,7 +96,7 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
           }
         },
         (error) => {
-          console.log('Delete group error: ', error);
+          console.error('Delete group error: ', error);
           this.error = 'An error occured while trying to delete the group ';
         }
       );
@@ -112,14 +116,14 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
       console.log(newGroupName);
       this.invSrv.updateGroupName(newGroupName).subscribe(
         (updGrp) => {
-          console.log("group updated");
+          // console.log("group updated");
           this.title = updGrp.groupName;
         }
       );
 
     }).catch((error) => {
       if (error !== 'Cross click') {
-        console.log('Update group name error: ', error);
+        console.error('Update group name error: ', error);
         this.error = 'An error occured while trying to update the group name';
       }
     });
@@ -128,7 +132,7 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
     if (confirm('Are you sure to delete the item?')) {
       this.invSrv.deleteItem(item.id).subscribe(
         (result) => {
-          console.log("Result of deleting item: ", result);
+          // console.log("Result of deleting item: ", result);
           this.invGroup.invItems = this.invGroup.invItems.filter(it => it.id !== item.id);
           this.refreshFilterInvGroup();
         },
@@ -140,7 +144,6 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
     }
   }
   loadAllItems() {
-    console.log('Load all items');
     this.invSrv.loadAllInventoryItems().subscribe(
       (itmList) => {
         this.invGroup = itmList;
@@ -159,8 +162,7 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
   refreshTable(refreshItem: any) { // coming from the html page. 
     // console.log("Refresh item: " , refreshItem);
     let ref;
-    if (refreshItem !== 'inv') {
-      // console.log('not eq inv');
+    if (refreshItem !== 'inv') { // inv comes from the html page.
       ref = refreshItem;
     } else {
       ref = this.invGroup.invItems;
@@ -174,7 +176,7 @@ export class InventoryPageComponent implements OnDestroy, OnInit {
   // search filter changed// coming from the textbox.
   filterChanged(text): void {
     const result = search(text, this.pipe, this.invGroup.invItems);
-    this.page  = 1;
+    this.page = 1;
     this.refreshTable(result);
     this.collectionSize = result.length;
   }

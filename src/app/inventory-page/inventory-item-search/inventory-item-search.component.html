@@ -1,5 +1,23 @@
-<p>Enter item to search</p>
-<div class="form-group">
-     <input type="text" class="form-control" /> 
+<h3>Inventory Search</h3>
+
+<div class="row">
+     <div class="col-md-4">
+          <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+          <div *ngIf="message" class="alert alert-warning mt-3 mb-0">{{message}}</div>
+          <form  [formGroup]="searchForm" (submit)="submitSearch()" >
+          <div class="form-group">
+               <label for="searchBoxId">Enter search </label>
+               <input type="text" class="form-control" id="searchBoxId" placeholder="search text"  formControlName="search_field"
+               [ngClass]="{'is-invalid': form.search_field.errors && ( (form.search_field.touched || form.search_field.dirty) || submitted )      }" />
+               <div *ngIf="form.search_field.errors && ( (form.search_field.touched || form.search_field.dirty) || submitted )" class="invalid-feedback mb-1">
+                    <div *ngIf="form.search_field.errors?.required">Please provide a valid search.</div>
+                    <div *ngIf="form.search_field.errors?.minlength">Search must be greater than 2 character.</div>
+                </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+               <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+               Search
+          </button>
+     </form>
+     </div>
 </div>
-<button></button>

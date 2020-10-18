@@ -13,6 +13,8 @@ export class InventoryService {
   private invGroupList: any[] = [];
   private itemToEdit: any; // this is the item to edit when editing an item. 
 
+  public searchItemsResult: any;  // search items iffound in result
+
   constructor(private http: HttpClient) {
     this.apiUrl = domainName();
   }
@@ -77,6 +79,12 @@ export class InventoryService {
         return updItem;
       }));
   }
+
+searchInventory(text: string): Observable<any>{
+  return this.http.get<any>(`${this.apiUrl}/bwservice/webapi/inv/search/${text}`);
+}
+
+
   groupList() {
     return this.invGroupList;
   }
