@@ -30,7 +30,7 @@ export class EditInventoryPageComponent implements OnInit {
   get r() { return this.f.references as FormArray; }
 
   ngOnInit(): void {
-    console.log("edit page");
+    // console.log("edit page");
     
     this.groupList = this.invSvc.groupList();
 
@@ -41,12 +41,12 @@ export class EditInventoryPageComponent implements OnInit {
       let id = params["itmId"];
       
 
-      console.log('Requested id: ', id);
+      // console.log('Requested id: ', id);
 
       // fetch the item to edit and verify if the ID match
       const item = this.invSvc.getItemToEdit();
 
-      console.log('gotItem to edit: ', item);
+      // console.log('gotItem to edit: ', item);
       if (Object.is(item.id, parseInt(id))) {       
 
         this.groupSelected = item.groupId;
@@ -72,7 +72,7 @@ export class EditInventoryPageComponent implements OnInit {
         if (item.thumbBase64){
 
           this.previewUrl = `data:image/jpg;base64,${item.thumbBase64}`;
-          console.log("thumbnail: " , this.previewUrl);
+          // console.log("thumbnail: " , this.previewUrl);
         }
 
       } else {
@@ -127,7 +127,7 @@ export class EditInventoryPageComponent implements OnInit {
     this.invSvc.updateItem(formData).subscribe(
       (result: any) => {
 
-        console.log('edit result' , result);
+        // console.log('edit result' , result);
         this.submitted = false;
         this.loading = false;
         this.router.navigate(['/inv/', this.groupSelected ]);
@@ -146,7 +146,7 @@ export class EditInventoryPageComponent implements OnInit {
 
   addRef($event) {
     $event.preventDefault(); //to not sub,mit the form
-    console.log("add ref");
+    // console.log("add ref");
     this.r.push(this.formBuilder.group({
       inv_ref_id: [-1],
       inv_ref_name: [''],

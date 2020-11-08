@@ -53,9 +53,8 @@ export class LoginPageComponent implements OnInit {
     }
     const userToLog = this.loginFormGroup.value;
 
-    
     let hashed = this.authSvc.hashPassword(userToLog.password);
-    console.log("hashed: " , hashed);
+    // console.log("hashed: " , hashed);
 
     const auth = new AuthUser(userToLog.userName, hashed, Websites.service);
 

@@ -10,9 +10,6 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./add-inventory-page.component.css']
 })
 export class AddInventoryPageComponent implements OnInit {
-// TODO add validation - 
-// add inventory tale link
-
 
   groupList: any[] = [];
   groupSelected = "6";
@@ -107,7 +104,7 @@ export class AddInventoryPageComponent implements OnInit {
 
   addRef($event) {
     $event.preventDefault(); //to not sub,mit the form
-    console.log("add ref");
+    // console.log("add ref");
     this.r.push(this.formBuilder.group({
       inv_ref_name: [''],
       inv_link_html: [false]
