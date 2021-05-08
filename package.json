@@ -22,6 +22,7 @@
     "@angular/router": "^10.1.6",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
+    "@swimlane/ngx-charts": "^17.0.1",
     "bootstrap": "^4.5.0",
     "jquery": "^3.5.1",
     "js-sha512": "^0.8.0",
