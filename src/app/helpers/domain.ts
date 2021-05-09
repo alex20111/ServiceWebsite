@@ -6,9 +6,9 @@ export function domainName(): string {
 
     // console.log("Domain-> " , domain);
 
-    if (domain.indexOf('localhost') !== -1){
-        return 'http://' + domain.substring(0, 9) + ':8080';
-    }
+    // if (domain.indexOf('localhost') !== -1){
+    //     return 'http://' + domain.substring(0, 9) + ':8080';
+    // }
 
     let correctDomain: string;
 

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NewGroupNameModalComponent } from './new-group-name-modal.component';
 
@@ -6,7 +6,7 @@ describe('NewGroupNameModalComponent', () => {
   let component: NewGroupNameModalComponent;
   let fixture: ComponentFixture<NewGroupNameModalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ NewGroupNameModalComponent ]
     })

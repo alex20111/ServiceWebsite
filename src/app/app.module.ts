@@ -23,8 +23,7 @@ import { AddInventoryPageComponent } from './inventory-page/add-inventory-page/a
 import { EditInventoryPageComponent } from './inventory-page/edit-inventory-page/edit-inventory-page.component';
 import { NewGroupNameModalComponent } from './inventory-page/new-group-name-modal/new-group-name-modal.component';
 import { InventoryItemSearchComponent } from './inventory-page/inventory-item-search/inventory-item-search.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 
 
@@ -53,8 +52,9 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    NgxChartsModule,
-    BrowserAnimationsModule 
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    })
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
               { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }

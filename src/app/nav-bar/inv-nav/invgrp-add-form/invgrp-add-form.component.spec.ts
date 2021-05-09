@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InvgrpAddFormComponent } from './invgrp-add-form.component';
 
@@ -6,7 +6,7 @@ describe('InvgrpAddFormComponent', () => {
   let component: InvgrpAddFormComponent;
   let fixture: ComponentFixture<InvgrpAddFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ InvgrpAddFormComponent ]
     })

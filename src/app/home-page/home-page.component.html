@@ -1,43 +1,53 @@
 <div class="container-fluid">
   <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
 
-  <h3> Current temperature</h3>
-  <div class="row">
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-2 col-md-4 ">
-      <div class="card border-left-primary shadow py-2 mb-4">
+  <div  echarts [options]="options" [loading]="isLoading" [merge]="updateOptions" theme="macarons" class="demo-chart"></div>
+  <div class="row justify-content-md-center">
+    <div class="col-xl-4 col-md-6 ">
+
+      <div class="card w-100">
+        <div class="card-body">
+          <h5 class="card-title text-center ">Current </h5>
+          <p class="card-text text-center">
+            <b>Sensor 1:</b> {{currTemp.currTemp1}}<span>&#8451;</span>  &nbsp; {{ currTemp.currTemp1Date | date:'shortTime' }}   <br/>
+           <b> Sensor 2: </b>{{currTemp.currTemp2}}<span>&#8451;</span> &nbsp;{{ currTemp.currTemp2Date | date:'shortTime' }}  <br/>
+            <span *ngIf="currTemp.currPool"><b>Pool:</b> {{currTemp.currPool}}<span>&#8457;</span> &nbsp; {{ currTemp.currPoolDate | date:'shortTime' }} </span>
+            
+            </p>
+          
+        </div>
+      </div>
+      <!-- <div class="card border-left-primary shadow py-2 mb-4">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Sun </div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800"> 
-                  <span *ngIf="loadingTemp" class="spinner-border spinner-border-sm mr-1"></span>
-                  <div *ngIf="temperature">{{temperature.tempSun}}</div>
-                </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                <span *ngIf="loadingTemp" class="spinner-border spinner-border-sm mr-1"></span>
+                <div *ngIf="temperature">{{temperature.tempSun}}</div>
+              </div>
             </div>
             <div class="col-auto">
-              <i class="fas fa-sun fa-2x text-gray-300"></i><br/>
+              <i class="fas fa-sun fa-2x text-gray-300"></i><br />
               <small *ngIf="temperature">{{temperature.tmpSunUpdDt}}</small>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Earnings (Monthly) Card Example -->
-
-      <div class="card border-left-success shadow py-2 mb-4">
+       <div class="card border-left-success shadow py-2 mb-4">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Shade</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">
                 <span *ngIf="loadingTemp" class="spinner-border spinner-border-sm mr-1"></span>
-                  <div *ngIf="temperature">{{temperature.tempShade}}</div>
+                <div *ngIf="temperature">{{temperature.tempShade}}</div>
               </div>
             </div>
             <div class="col-auto">
-              <i class="fas fa-umbrella-beach fa-2x text-gray-300"></i> <br/>
+              <i class="fas fa-umbrella-beach fa-2x text-gray-300"></i> <br />
               <small *ngIf="temperature">{{temperature.tmpShadeUpdDt}}</small>
             </div>
           </div>
@@ -50,21 +60,19 @@
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Pool</div>
               <div class="h5 mb-0 font-weight-bold text-gray-800">
                 <span *ngIf="loadingTemp" class="spinner-border spinner-border-sm mr-1"></span>
-                  <div *ngIf="temperature">{{temperature.tempPool}}</div>
+                <div *ngIf="temperature">{{temperature.tempPool}}</div>
               </div>
             </div>
             <div class="col-auto">
-                <i class="fas fa-swimming-pool fa-2x text-gray-300"></i> <br/>
-                <small *ngIf="temperature">{{temperature.tmpPoolUpdDt}}</small>
+              <i class="fas fa-swimming-pool fa-2x text-gray-300"></i> <br />
+              <small *ngIf="temperature">{{temperature.tmpPoolUpdDt}}</small>
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <!-- <div *ngIf="user">Hello {{user.firstName}} </div> -->
 
 
   </div>
 </div>
-
-
